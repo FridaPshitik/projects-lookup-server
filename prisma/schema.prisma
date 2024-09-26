@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Project {
+  id             Int       @id @default(autoincrement())
+  name           String
+  purpose        String
+  description    String
+  status         String
+  productionTime DateTime?
+  factorableType String
+  external       External? @relation(fields: [externalId], references: [id])
+  externalId     Int?
+  internal       Internal? @relation(fields: [internalId], references: [id], name: "performFactor")
+  internalId     Int?
+  requires       Internal  @relation(fields: [requiresId], references: [id], name: "requiresFactor")
+  requiresId     Int
+  classification String
+  environment    String
+  population     String[]
+}
+
+model Internal {
+  id                Int       @id @default(autoincrement())
+  name              String
+  command           String
+  department        String
+  contact           String?
+  communicationType String?
+  requiresProject   Project[] @relation(name: "requiresFactor")
+  performedProject  Project[] @relation(name: "performFactor")
+}
+
+model External {
+  id               Int       @id @default(autoincrement())
+  name             String
+  image            String
+  performedProject Project[]
+}
