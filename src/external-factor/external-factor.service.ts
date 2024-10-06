@@ -1,39 +1,62 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, BadRequestException } from '@nestjs/common';
 import { External, Prisma } from '@prisma/client';
 import { PrismaService } from './../prisma.service';
 
 @Injectable()
 export class ExternalFactorService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async externalFactors(): Promise<External[]> {
-    return this.prisma.external.findMany();
+    try {
+      return this.prisma.external.findMany();
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
   }
 
   async createExternalFactor(
     data: Prisma.ExternalCreateInput,
   ): Promise<External> {
-    return this.prisma.external.create({
-      data,
-    });
+    try {
+      return this.prisma.external.create({
+        data,
+      });
+    }
+    catch (error) {
+      if (error instanceof Prisma.PrismaClientValidationError) {
+        throw new BadRequestException(error.message);
+      } else {
+        throw new InternalServerErrorException();
+      }
+    }
   }
 
   async updateExternalFactor(params: {
     where: Prisma.ExternalWhereUniqueInput;
     data: Prisma.ExternalUpdateInput;
   }): Promise<External> {
-    const { where, data } = params;
-    return this.prisma.external.update({
-      data,
-      where,
-    });
+    try {
+      const { where, data } = params;
+      return this.prisma.external.update({
+        data,
+        where,
+      });
+    }
+    catch (error) {
+      throw new InternalServerErrorException();
+    }
   }
 
   async deleteExternalFactor(
     where: Prisma.ExternalWhereUniqueInput,
   ): Promise<External> {
-    return this.prisma.external.delete({
-      where,
-    });
+    try {
+      return this.prisma.external.delete({
+        where,
+      });
+    }
+    catch (error) {
+      throw new InternalServerErrorException();
+    }
   }
 }
