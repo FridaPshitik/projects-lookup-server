@@ -24,7 +24,8 @@ CREATE TABLE "Internal" (
     "command" TEXT NOT NULL,
     "department" TEXT NOT NULL,
     "contact" TEXT,
-    "communicationType" TEXT,
+    "phone" TEXT,
+    "email" TEXT,
 
     CONSTRAINT "Internal_pkey" PRIMARY KEY ("id")
 );
