@@ -18,7 +18,7 @@ async function main() {
         department: '',
         contact: 'רפי',
         phone: '0534189652',
-        email:'r@tzipor.co.il'
+        email: 'r@tzipor.co.il',
       },
     ],
   });
