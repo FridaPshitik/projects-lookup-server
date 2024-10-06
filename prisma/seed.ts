@@ -17,7 +17,8 @@ async function main() {
         command: 'פיקוד צפון',
         department: '',
         contact: 'רפי',
-        communicationType: 'PHONE',
+        phone: '0534189652',
+        email:'r@tzipor.co.il'
       },
     ],
   });
@@ -29,13 +30,13 @@ async function main() {
         description:
           'פרויקט זה נועד על מנת למנוע כפילות פיתוח קוד של פרוייקט קיים.\nהפרוייקט ייתן אפשרויות חיפוש מתקדמות.',
         productionTime: new Date(),
-        factorableType: 'EXTERNAL',
+        factorableType: 'חיצוני',
         requiresId: 1,
-        status: 'IN_PROGRESS',
+        status: 'בתהליך',
         externalId: 1,
-        classification: 'SODI',
-        environment: 'BLACk',
-        population: ['MUST', 'ATUDA'],
+        classification: 'סודי',
+        environment: 'שחורה',
+        population: ['קבע', 'חובה'],
       },
       {
         name: 'פנימי',
@@ -43,13 +44,13 @@ async function main() {
         description:
           'פרויקט זה נועד על מנת למנוע כפילות פיתוח קוד של פרוייקט קיים.\nהפרוייקט ייתן אפשרויות חיפוש מתקדמות.',
         productionTime: new Date(),
-        factorableType: 'INTERNAL',
+        factorableType: 'פנימי',
         requiresId: 1,
-        status: 'IN_PROGRESS',
+        status: 'בתהליך',
         internalId: 1,
-        classification: 'SHAMUR',
-        environment: 'RED',
-        population: ['MILUIM'],
+        classification: 'שמור',
+        environment: 'אדומה',
+        population: ['מילואים'],
       },
     ],
   });

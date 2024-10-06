@@ -9,7 +9,7 @@ services:
       - .:/app
     tty: true
     ports:
-      - 3000:3000
+      - 8000:8000
     environment:
       - DATABASE_URL=postgres://${DB_USERNAME}:${DB_PASSWORD}@database:5432/${DB_DATABASE}
     depends_on:
