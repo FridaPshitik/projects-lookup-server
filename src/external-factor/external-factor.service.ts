@@ -7,56 +7,34 @@ export class ExternalFactorService {
   constructor(private prisma: PrismaService) { }
 
   async externalFactors(): Promise<External[]> {
-    try {
-      return this.prisma.external.findMany();
-    } catch (error) {
-      throw new InternalServerErrorException();
-    }
+    return this.prisma.external.findMany();
   }
 
   async createExternalFactor(
     data: Prisma.ExternalCreateInput,
   ): Promise<External> {
-    try {
-      return this.prisma.external.create({
-        data,
-      });      
-    }
-    catch (error) {
-      if (error instanceof Prisma.PrismaClientValidationError) {
-        throw new BadRequestException({"code":error.name ,"message":error.message});
-      } 
-    }
+    return this.prisma.external.create({
+      data,
+    });
   }
 
   async updateExternalFactor(params: {
     where: Prisma.ExternalWhereUniqueInput;
     data: Prisma.ExternalUpdateInput;
   }): Promise<External> {
-    try {
-      const { where, data } = params;
-      return this.prisma.external.update({
-        data,
-        where,
-      });
-    }
-    catch (error) {
-      if (error instanceof Prisma.PrismaClientValidationError) {
-        throw new BadRequestException(error.message);
-      }} 
+    const { where, data } = params;
+    return this.prisma.external.update({
+      data,
+      where,
+    });
   }
 
   async deleteExternalFactor(
     where: Prisma.ExternalWhereUniqueInput,
   ): Promise<External> {
-    try {
-      return this.prisma.external.delete({
-        where,
-      });
-    }
-    catch (error) {
-      if (error instanceof Prisma.PrismaClientValidationError) {
-        throw new BadRequestException(error.message);
-      } }
+    return this.prisma.external.delete({
+      where,
+    });
   }
 }
+
