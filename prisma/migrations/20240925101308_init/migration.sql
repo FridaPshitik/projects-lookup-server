@@ -32,7 +32,7 @@ CREATE TABLE "Internal" (
 -- CreateTable
 CREATE TABLE "External" (
     "id" SERIAL NOT NULL,
-    "name" TEXT NOT NULL,
+    "name"  TEXT NOT NULL,
     "image" TEXT NOT NULL,
 
     CONSTRAINT "External_pkey" PRIMARY KEY ("id")

@@ -20,14 +20,12 @@ export class ExternalFactorService {
     try {
       return this.prisma.external.create({
         data,
-      });
+      });      
     }
     catch (error) {
       if (error instanceof Prisma.PrismaClientValidationError) {
-        throw new BadRequestException(error.message);
-      } else {
-        throw new InternalServerErrorException();
-      }
+        throw new BadRequestException({"code":error.name ,"message":error.message});
+      } 
     }
   }
 
@@ -43,8 +41,9 @@ export class ExternalFactorService {
       });
     }
     catch (error) {
-      throw new InternalServerErrorException();
-    }
+      if (error instanceof Prisma.PrismaClientValidationError) {
+        throw new BadRequestException(error.message);
+      }} 
   }
 
   async deleteExternalFactor(
@@ -56,7 +55,8 @@ export class ExternalFactorService {
       });
     }
     catch (error) {
-      throw new InternalServerErrorException();
-    }
+      if (error instanceof Prisma.PrismaClientValidationError) {
+        throw new BadRequestException(error.message);
+      } }
   }
 }
