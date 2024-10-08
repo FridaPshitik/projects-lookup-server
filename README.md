@@ -44,4 +44,4 @@ npx prisma db seed
 npm run start:dev
 ```  
 
-Your server will be accessible at http://localhost:3000.
+Your server will be accessible at http://localhost:8000.
