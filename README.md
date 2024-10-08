@@ -1,4 +1,4 @@
-# atuda-app-server
+# project-lookup-server
 
 ## 🚀 Overview
 

@@ -1,10 +1,10 @@
-import { Injectable, InternalServerErrorException, BadRequestException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { External, Prisma } from '@prisma/client';
 import { PrismaService } from './../prisma.service';
 
 @Injectable()
 export class ExternalFactorService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async externalFactors(): Promise<External[]> {
     return this.prisma.external.findMany();
@@ -37,4 +37,3 @@ export class ExternalFactorService {
     });
   }
 }
-
