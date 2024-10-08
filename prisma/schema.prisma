@@ -32,7 +32,8 @@ model Internal {
   command           String
   department        String
   contact           String?
-  communicationType String?
+  phone String?
+  email String?
   requiresProject   Project[] @relation(name: "requiresFactor")
   performedProject  Project[] @relation(name: "performFactor")
 }
