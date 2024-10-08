@@ -47,7 +47,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
       errors: typeof errorMessage === 'string' ? [errorMessage] : errorMessage,
     };
     console.log(errorResponse);
-    
     httpAdapter.reply(ctx.getResponse(), errorResponse, httpStatus);
   }
 }
