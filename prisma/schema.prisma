@@ -9,7 +9,7 @@ datasource db {
 
 model Project {
   id             Int       @id @default(autoincrement())
-  name           String 
+  name           String    @unique     
   purpose        String
   description    String
   status         String
@@ -28,19 +28,19 @@ model Project {
 
 model Internal {
   id                Int       @id @default(autoincrement())
-  name              String
+  name              String    @unique
   command           String
   department        String
   contact           String?
-  phone String?
-  email String?
+  phone             String?
+  email             String?
   requiresProject   Project[] @relation(name: "requiresFactor")
   performedProject  Project[] @relation(name: "performFactor")
 }
 
 model External {
   id               Int       @id @default(autoincrement())
-  name             String
+  name             String    @unique
   image            String
   performedProject Project[]
 }
