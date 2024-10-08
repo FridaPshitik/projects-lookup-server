@@ -26,7 +26,7 @@ async function bootstrap() {
     const { httpAdapter } = app.get(HttpAdapterHost);
     app.useGlobalFilters(new HttpExceptionFilter(httpAdapter));
 
-    await app.listen(3000, '0.0.0.0');
+    await app.listen(8000, '0.0.0.0');
   } catch (error) {
     Logger.error({ err: error });
     process.exit();
