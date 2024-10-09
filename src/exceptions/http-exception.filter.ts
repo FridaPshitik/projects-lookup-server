@@ -1,26 +1,4 @@
 
-// import { Catch, HttpException } from '@nestjs/common';
-
-// @Catch(HttpException)
-// export class HttpExceptionFilter {
-//   catch(exception, host) {
-//     const ctx = host.switchToHttp();
-//     const response = ctx.getResponse();
-//     const request = ctx.getRequest();
-//     const status = exception.getStatus();
-//     const message=exception.message
-
-//     response
-//       .status(status)
-//       .json({
-//         statusCode: status,
-//         timestamp: new Date().toISOString(),
-//         message:message,
-//         // path: request.url,
-//       });
-//   }
-// }
-// import { FastifyError } from 'fastify';
 import { AbstractHttpAdapter } from '@nestjs/core';
 import { Catch, ArgumentsHost, ExceptionFilter ,HttpException} from '@nestjs/common';
 import { Prisma } from '@prisma/client';
@@ -29,7 +7,6 @@ import { Prisma } from '@prisma/client';
 export class HttpExceptionFilter implements ExceptionFilter {
   constructor(private readonly httpAdapterHost: AbstractHttpAdapter) {}
   catch(exception:HttpException , host: ArgumentsHost): void {
-    // let errorMessage: unknown;
     let httpStatus: number;
     const lastIndex = exception.message.lastIndexOf('\n');
     const extractedString = exception.message.substring(lastIndex + 1).trim();
@@ -39,19 +16,14 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     if (exception instanceof Prisma.PrismaClientRustPanicError) {
       httpStatus = 400;
-    //   errorMessage = extractedString;
     } else if (exception instanceof Prisma.PrismaClientValidationError) {
       httpStatus = 422;
-    //   errorMessage = extractedString;
     } else if (exception instanceof Prisma.PrismaClientKnownRequestError) {
       httpStatus = 400;
-    //   errorMessage = extractedString;
     } else if (exception instanceof Prisma.PrismaClientUnknownRequestError) {
       httpStatus = 400;
-    //   errorMessage = extractedString;
     } else if (exception instanceof Prisma.PrismaClientInitializationError) {
       httpStatus = 400;
-    //   errorMessage = extractedString;
     } else if (
       exception.getStatus() &&
       exception.getStatus() >= 400 &&
@@ -65,7 +37,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
     }
     const errorResponse = {
       status: httpStatus,
-      // error: typeof errorMessage === 'string' ? [errorMessage] : errorMessage,
       error: errorMessage,
     };
     console.log(errorResponse);
