@@ -1,12 +1,16 @@
-
 import { AbstractHttpAdapter } from '@nestjs/core';
-import { Catch, ArgumentsHost, ExceptionFilter ,HttpException} from '@nestjs/common';
+import {
+  Catch,
+  ArgumentsHost,
+  ExceptionFilter,
+  HttpException,
+} from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
   constructor(private readonly httpAdapterHost: AbstractHttpAdapter) {}
-  catch(exception:HttpException , host: ArgumentsHost): void {
+  catch(exception: HttpException, host: ArgumentsHost): void {
     let httpStatus: number;
     const lastIndex = exception.message.lastIndexOf('\n');
     const extractedString = exception.message.substring(lastIndex + 1).trim();
