@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { Internal, Prisma } from '@prisma/client';
 import { PrismaService } from './../prisma.service';
 
@@ -8,6 +8,17 @@ export class InternalFactorService {
 
   async internalFactors(): Promise<Internal[]> {
     return this.prisma.internal.findMany();
+  }
+
+
+  async getRequestTypeById(id: string) {
+    try {
+      return await this.prisma.internal.findUnique({
+        where: { id: Number(id) },
+      });
+    } catch (error) {
+      throw new InternalServerErrorException();
+    }
   }
 
   async createInternalFactor(
