@@ -39,6 +39,15 @@ CREATE TABLE "External" (
     CONSTRAINT "External_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateIndex
+CREATE UNIQUE INDEX "Project_name_key" ON "Project"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Internal_name_key" ON "Internal"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "External_name_key" ON "External"("name");
+
 -- AddForeignKey
 ALTER TABLE "Project" ADD CONSTRAINT "Project_externalId_fkey" FOREIGN KEY ("externalId") REFERENCES "External"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 

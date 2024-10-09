@@ -10,17 +10,6 @@ export class InternalFactorService {
     return this.prisma.internal.findMany();
   }
 
-
-  async getRequestTypeById(id: string) {
-    try {
-      return await this.prisma.internal.findUnique({
-        where: { id: Number(id) },
-      });
-    } catch (error) {
-      throw new InternalServerErrorException();
-    }
-  }
-
   async createInternalFactor(
     data: Prisma.InternalCreateInput,
   ): Promise<Internal> {
