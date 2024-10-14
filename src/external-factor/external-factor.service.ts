@@ -10,6 +10,12 @@ export class ExternalFactorService {
     return this.prisma.external.findMany();
   }
 
+  async getExternalById(id: number) {
+    return await this.prisma.external.findUnique({
+      where: { id: Number(id) },
+    });
+  }
+
   async createExternalFactor(
     data: Prisma.ExternalCreateInput,
   ): Promise<External> {
