@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { External, Prisma } from '@prisma/client';
 import { PrismaService } from './../prisma.service';
+import { rm } from 'fs';
 
 @Injectable()
 export class ExternalFactorService {
@@ -38,6 +39,14 @@ export class ExternalFactorService {
   async deleteExternalFactor(
     where: Prisma.ExternalWhereUniqueInput,
   ): Promise<External> {
+    const imageUrl = (await this.getExternalById(where.id)).image;
+    try {
+      rm(`${process.cwd()}/uploads/${imageUrl}`, (error) => {
+        throw error;
+      });
+    } catch (error) {
+      throw new Error('Failed to delete file');
+    }
     return this.prisma.external.delete({
       where,
     });
