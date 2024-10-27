@@ -29,6 +29,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     } else if (exception instanceof Prisma.PrismaClientInitializationError) {
       httpStatus = 400;
     } else if (
+      exception instanceof HttpException &&
       exception.getStatus() &&
       exception.getStatus() >= 400 &&
       exception.getStatus() <= 499
@@ -37,7 +38,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       errorMessage = exception.message;
     } else {
       httpStatus = 500;
-      errorMessage = `${exception.message}  Sorry! something went to wrong on our end `;
+      errorMessage = exception.message ;
     }
     const errorResponse = {
       status: httpStatus,
