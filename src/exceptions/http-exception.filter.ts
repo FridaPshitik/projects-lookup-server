@@ -38,7 +38,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       errorMessage = exception.message;
     } else {
       httpStatus = 500;
-      errorMessage = exception.message ;
+      errorMessage = exception.message;
     }
     const errorResponse = {
       status: httpStatus,
