@@ -28,8 +28,8 @@ model Project {
 
 model Internal {
   id                Int       @id @default(autoincrement())
-  name              String    @unique
-  command           String
+  name              String    
+  command           String    @unique
   department        String
   contact           String?
   phone String?
