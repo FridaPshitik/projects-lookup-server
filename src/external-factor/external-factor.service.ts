@@ -40,13 +40,11 @@ export class ExternalFactorService {
     where: Prisma.ExternalWhereUniqueInput,
   ): Promise<External> {
     const imageUrl = (await this.getExternalById(where.id)).image;
-    try {
-      rm(`${process.cwd()}/uploads/${imageUrl}`, (error) => {
+    rm(`${process.cwd()}/uploads/${imageUrl}`, (error) => {
+      if (error) {
         throw error;
-      });
-    } catch (error) {
-      throw new Error('Failed to delete file');
-    }
+      }
+    });
     return this.prisma.external.delete({
       where,
     });
