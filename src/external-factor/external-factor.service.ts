@@ -5,7 +5,7 @@ import { rm } from 'fs';
 
 @Injectable()
 export class ExternalFactorService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async externalFactors(): Promise<External[]> {
     return this.prisma.external.findMany();
