@@ -60,7 +60,9 @@ export class ExternalFactorController {
   }
 
   @Delete(':id')
-  async deleteExternalFactor(@Param('id') id: string): Promise<External> {
-    return this.externalFactorService.deleteExternalFactor({ id: Number(id) });
+  async deleteExternalFactor(@Param('id') id: number): Promise<External> {
+    return this.externalFactorService.deleteExternalFactor({
+      where: { id: Number(id) },
+    });
   }
 }

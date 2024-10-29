@@ -37,6 +37,8 @@ export class ProjectController {
 
   @Delete(':id')
   async deleteProject(@Param('id') id: string): Promise<Project> {
-    return this.projectService.deleteProject({ id: Number(id) });
+    return this.projectService.deleteProject({
+      where: { id: Number(id) },
+    });
   }
 }

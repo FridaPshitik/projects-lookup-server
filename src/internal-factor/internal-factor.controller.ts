@@ -37,6 +37,8 @@ export class InternalFactorController {
 
   @Delete(':id')
   async deleteInternalFactor(@Param('id') id: string): Promise<Internal> {
-    return this.internalFactorService.deleteInternalFactor({ id: Number(id) });
+    return this.internalFactorService.deleteInternalFactor({
+      where: { id: Number(id) },
+    });
   }
 }

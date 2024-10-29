@@ -111,6 +111,7 @@ describe('ProjectService', () => {
   });
 
   it('should delete project', async () => {
+    const projectInDB: { id: number } = { id: 1 };
     expect(
       await service.deleteProject({
         where: { id: projectInDB.id },
