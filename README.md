@@ -1,4 +1,4 @@
-# projects-lookup-server
+# Projects-lookup-server
 
 ## 🚀 Overview
 

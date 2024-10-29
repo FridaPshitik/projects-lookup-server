@@ -19,7 +19,7 @@ export class InternalFactorService {
   }
 
   async updateInternalFactor(params: {
-    where: Prisma.InternalWhereUniqueInput;
+    where: { id: number };
     data: Prisma.InternalUpdateInput;
   }): Promise<Internal> {
     const { where, data } = params;
@@ -29,9 +29,10 @@ export class InternalFactorService {
     });
   }
 
-  async deleteInternalFactor(
-    where: Prisma.InternalWhereUniqueInput,
-  ): Promise<Internal> {
+  async deleteInternalFactor(params: {
+    where: { id: number };
+  }): Promise<Internal> {
+    const { where } = params;
     return this.prisma.internal.delete({
       where,
     });

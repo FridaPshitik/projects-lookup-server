@@ -28,7 +28,7 @@ export class ProjectService {
   }
 
   async updateProject(params: {
-    where: Prisma.ProjectWhereUniqueInput;
+    where: { id: number };
     data: Prisma.ProjectUpdateInput;
   }): Promise<Project> {
     const { where, data } = params;
@@ -38,7 +38,8 @@ export class ProjectService {
     });
   }
 
-  async deleteProject(where: Prisma.ProjectWhereUniqueInput): Promise<Project> {
+  async deleteProject(params: { where: { id: number } }): Promise<Project> {
+    const { where } = params;
     return this.prisma.project.delete({
       where,
     });
