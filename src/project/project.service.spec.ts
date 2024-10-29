@@ -5,24 +5,22 @@ import { ProjectService } from './project.service';
 describe('ProjectService', () => {
   let service: ProjectService;
 
-  const projectToSend = [
-    {
-      id: 1,
-      name: 'תיעוד',
-      purpose: 'תיעוד פרויקטים',
-      description:
-        'פרויקט זה נועד על מנת למנוע כפילות פיתוח קוד של פרוייקט קיים.\nהפרוייקט ייתן אפשרויות חיפוש מתקדמות.',
-      status: 'IN_PROGRESS',
-      productionTime: '2024-09-25T12:16:37.284Z',
-      factorableType: 'EXTERNAL',
-      externalId: null,
-      internalId: 1,
-      requiresId: 1,
-      classification: 'SODI',
-      environment: 'BLACk',
-      population: ['MUST', 'ATUDA'],
-    },
-  ];
+  // const projectToSend = {
+  //   id: 2,
+  //   name: 'אלומה',
+  //   purpose: 'תיעוד פרויקטים',
+  //   description:
+  //     'פרויקט זה נועד על מנת למנוע כפילות פיתוח קוד של פרוייקט קיים.\nהפרוייקט ייתן אפשרויות חיפוש מתקדמות.',
+  //   status: 'IN_PROGRESS',
+  //   productionTime: '2024-09-25T12:16:37.284Z',
+  //   factorableType: 'EXTERNAL',
+  //   externalId: null,
+  //   internalId: 1,
+  //   requiresId: 1,
+  //   classification: 'SODI',
+  //   environment: 'BLACk',
+  //   population: ['MUST', 'ATUDA'],
+  // };
 
   const projectInDB = {
     id: 1,
@@ -60,27 +58,20 @@ describe('ProjectService', () => {
     },
   };
 
-  const newProject = {
-    id: 2,
-    name: 'אלומה',
-    purpose: 'תיעוד פרויקטים',
-    description:
-      'פרויקט זה נועד על מנת למנוע כפילות פיתוח קוד של פרוייקט קיים.\nהפרוייקט ייתן אפשרויות חיפוש מתקדמות.',
-    status: 'IN_PROGRESS',
-    productionTime: '2024-09-25T12:16:37.284Z',
-    factorableType: 'EXTERNAL',
-    externalId: null,
-    internalId: 1,
-    requiresId: 1,
-    classification: 'SODI',
-    environment: 'BLACk',
-    population: ['MUST', 'ATUDA'],
-  };
+  const newProject = projectInDB;
+  newProject.id = 2;
+  newProject.name = 'אלומה';
+
+  const purpose = 'תיעוד פרויקטים';
+  const updateProject = projectInDB;
+  updateProject.purpose = purpose;
 
   const db = {
     project: {
-      findMany: jest.fn().mockReturnValue(projectToSend),
+      findMany: jest.fn().mockReturnValue([projectInDB]),
       create: jest.fn().mockReturnValue(newProject),
+      update: jest.fn().mockReturnValue(updateProject),
+      delete: jest.fn().mockReturnValue(updateProject),
     },
   };
 
@@ -103,16 +94,27 @@ describe('ProjectService', () => {
   });
 
   it('should return projects', async () => {
-    expect(await service.projetcs()).toEqual(projectInDB);
+    expect(await service.projetcs()).toEqual([projectInDB]);
   });
 
   // it('should create project', async () => {
-  //   let projectToCreate = projectToSend[0];
-  //   projectToCreate.id = 2;
-  //   projectToCreate.name = 'שלום';
-  //   let newProject = projectInDB;
-  //   newProject.id = 2;
-  //   newProject.name = 'שלום';
-  //   expect(await service.createProject(projectToCreate)).toEqual(newProject);
+  //   expect(await service.createProject(projectToSend)).toEqual(newProject);
   // });
+
+  it('should update project', async () => {
+    expect(
+      await service.updateProject({
+        where: { id: projectInDB.id },
+        data: { purpose: purpose },
+      }),
+    ).toEqual(updateProject);
+  });
+
+  it('should delete project', async () => {
+    expect(
+      await service.deleteProject({
+        where: { id: projectInDB.id },
+      }),
+    ).toEqual(updateProject);
+  });
 });

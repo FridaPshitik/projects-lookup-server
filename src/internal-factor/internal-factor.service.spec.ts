@@ -27,10 +27,16 @@ describe('InternalFactorService', () => {
     email: 'r@tzipor.co.il',
   };
 
+  const phone = '0533333333';
+  const updateInternal = internal[0];
+  updateInternal.phone = phone;
+
   const db = {
     internal: {
       findMany: jest.fn().mockReturnValue(internal),
       create: jest.fn().mockReturnValue(newInternal),
+      update: jest.fn().mockReturnValue(updateInternal),
+      delete: jest.fn().mockReturnValue(updateInternal),
     },
   };
 
@@ -72,15 +78,20 @@ describe('InternalFactorService', () => {
     );
   });
 
-  // it('should update internal factor', async () => {
-  //   const phone = '0533333333';
-  //   const update = internal[0];
-  //   update.phone = phone;
-  //   expect(
-  //     await service.updateInternalFactor({
-  //       where: internal[0].id,
-  //       data: { phone: '0533333333' },
-  //     }),
-  //   ).resolves.toEqual(update);
-  // });
+  it('should update internal factor', async () => {
+    expect(
+      await service.updateInternalFactor({
+        where: { id: internal[0].id },
+        data: { phone: phone },
+      }),
+    ).toEqual(updateInternal);
+  });
+
+  it('should delete internal factor', async () => {
+    expect(
+      await service.deleteInternalFactor({
+        where: { id: internal[0].id },
+      }),
+    ).toEqual(updateInternal);
+  });
 });

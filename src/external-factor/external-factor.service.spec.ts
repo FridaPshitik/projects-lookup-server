@@ -9,7 +9,7 @@ describe('ExternalFactorService', () => {
     {
       id: 1,
       name: 'סקייבר',
-      image: 'skyvar.png',
+      image: 'inside.png',
     },
   ];
   const newExternal = {
@@ -18,10 +18,17 @@ describe('ExternalFactorService', () => {
     image: 'elbit.png',
   };
 
+  const name = 'start';
+  const updateExternal = external[0];
+  updateExternal.name = name;
+
   const db = {
     external: {
       findMany: jest.fn().mockReturnValue(external),
       create: jest.fn().mockReturnValue(newExternal),
+      update: jest.fn().mockReturnValue(updateExternal),
+      delete: jest.fn().mockReturnValue(updateExternal),
+      findUnique: jest.fn().mockReturnValue(updateExternal),
     },
   };
 
@@ -57,5 +64,22 @@ describe('ExternalFactorService', () => {
     expect(await service.createExternalFactor(newExternal)).toEqual(
       newExternal,
     );
+  });
+
+  it('should update external factor', async () => {
+    expect(
+      await service.updateExternalFactor({
+        where: { id: external[0].id },
+        data: { name: name },
+      }),
+    ).toEqual(updateExternal);
+  });
+
+  it('should delete external factor', async () => {
+    expect(
+      await service.deleteExternalFactor({
+        where: { id: external[0].id },
+      }),
+    ).toEqual(updateExternal);
   });
 });

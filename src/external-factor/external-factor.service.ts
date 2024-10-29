@@ -26,7 +26,7 @@ export class ExternalFactorService {
   }
 
   async updateExternalFactor(params: {
-    where: Prisma.ExternalWhereUniqueInput;
+    where: { id: number };
     data: Prisma.ExternalUpdateInput;
   }): Promise<External> {
     const { where, data } = params;
@@ -36,9 +36,10 @@ export class ExternalFactorService {
     });
   }
 
-  async deleteExternalFactor(
-    where: Prisma.ExternalWhereUniqueInput,
-  ): Promise<External> {
+  async deleteExternalFactor(params: {
+    where: { id: number };
+  }): Promise<External> {
+    const { where } = params;
     const imageUrl = (await this.getExternalById(where.id)).image;
     try {
       rm(`${process.cwd()}/uploads/${imageUrl}`, (error) => {
