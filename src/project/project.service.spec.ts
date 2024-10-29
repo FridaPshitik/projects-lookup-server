@@ -5,22 +5,23 @@ import { ProjectService } from './project.service';
 describe('ProjectService', () => {
   let service: ProjectService;
 
-  // const projectToSend = {
-  //   id: 2,
-  //   name: 'אלומה',
-  //   purpose: 'תיעוד פרויקטים',
-  //   description:
-  //     'פרויקט זה נועד על מנת למנוע כפילות פיתוח קוד של פרוייקט קיים.\nהפרוייקט ייתן אפשרויות חיפוש מתקדמות.',
-  //   status: 'IN_PROGRESS',
-  //   productionTime: '2024-09-25T12:16:37.284Z',
-  //   factorableType: 'EXTERNAL',
-  //   externalId: null,
-  //   internalId: 1,
-  //   requiresId: 1,
-  //   classification: 'SODI',
-  //   environment: 'BLACk',
-  //   population: ['MUST', 'ATUDA'],
-  // };
+  const projectToSend = {
+    id: 2,
+    name: 'אלומה',
+    purpose: 'תיעוד פרויקטים',
+    description:
+      'פרויקט זה נועד על מנת למנוע כפילות פיתוח קוד של פרוייקט קיים.\nהפרוייקט ייתן אפשרויות חיפוש מתקדמות.',
+    status: 'IN_PROGRESS',
+    productionTime: '2024-09-25T12:16:37.284Z',
+    factorableType: 'EXTERNAL',
+    externalId: null,
+    internalId: 1,
+    requiresId: 1,
+    classification: 'SODI',
+    environment: 'BLACk',
+    population: ['MUST', 'ATUDA'],
+    requires: null,
+  };
 
   const projectInDB = {
     id: 1,
@@ -97,9 +98,9 @@ describe('ProjectService', () => {
     expect(await service.projetcs()).toEqual([projectInDB]);
   });
 
-  // it('should create project', async () => {
-  //   expect(await service.createProject(projectToSend)).toEqual(newProject);
-  // });
+  it('should create project', async () => {
+    expect(await service.createProject(projectToSend)).toEqual(newProject);
+  });
 
   it('should update project', async () => {
     expect(

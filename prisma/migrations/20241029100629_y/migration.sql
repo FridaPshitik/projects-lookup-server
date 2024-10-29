@@ -43,7 +43,7 @@ CREATE TABLE "External" (
 CREATE UNIQUE INDEX "Project_name_key" ON "Project"("name");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Internal_command_key" ON "Internal"("command");
+CREATE UNIQUE INDEX "Internal_name_key" ON "Internal"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "External_name_key" ON "External"("name");

@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ExternalFactorService } from './external-factor.service';
 import { PrismaService } from './../prisma.service';
+import * as fs from 'fs';
 
 describe('ExternalFactorService', () => {
   let service: ExternalFactorService;
@@ -14,8 +15,8 @@ describe('ExternalFactorService', () => {
   ];
   const newExternal = {
     id: 2,
-    name: 'elbit',
-    image: 'elbit.png',
+    name: 'inside',
+    image: 'inside.png',
   };
 
   const name = 'start';
@@ -29,8 +30,10 @@ describe('ExternalFactorService', () => {
       update: jest.fn().mockReturnValue(updateExternal),
       delete: jest.fn().mockReturnValue(updateExternal),
       findUnique: jest.fn().mockReturnValue(updateExternal),
+      // rm: jest.fn().mockReturnValue(null),
     },
   };
+  jest.spyOn(fs, 'rm').mockReturnValue(null);
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
