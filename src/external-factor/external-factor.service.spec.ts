@@ -17,7 +17,10 @@ describe('ExternalFactorService', () => {
     error:
       'An operation failed because it depends on one or more records that were required but not found. Record to delete does not exist.',
   };
-
+  const uniqueConstraint = {
+    status: 400,
+    error: 'Unique constraint failed on the fields: (`command`)',
+  };
   const name = 'start';
   const updateExternal = external;
   updateExternal.name = name;
@@ -25,7 +28,10 @@ describe('ExternalFactorService', () => {
   const db = {
     external: {
       findMany: jest.fn().mockReturnValue([external]),
-      create: jest.fn().mockReturnValue(external),
+      create: jest
+        .fn()
+        .mockImplementationOnce(() => external)
+        .mockImplementationOnce(() => uniqueConstraint),
       update: jest.fn(({ where: { id } }) =>
         id === updateExternal.id ? updateExternal : idNotFound,
       ),
@@ -58,9 +64,17 @@ describe('ExternalFactorService', () => {
   it('should return external factors', async () => {
     expect(await service.externalFactors()).toEqual([external]);
   });
-
-  it('should create external factor', async () => {
-    expect(await service.createExternalFactor(external)).toEqual(external);
+  describe('create project', () => {
+    it('should create external factor', async () => {
+      expect(await service.createExternalFactor(external)).toEqual(external);
+    });
+    it('should return error - Unique error', async () => {
+      const failNew = external;
+      failNew.id = 2;
+      expect(await service.createExternalFactor(failNew)).toEqual(
+        uniqueConstraint,
+      );
+    });
   });
   describe('update internal factor by id', () => {
     it('should update external factor', async () => {

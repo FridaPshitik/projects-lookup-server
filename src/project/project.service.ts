@@ -6,7 +6,7 @@ import { PrismaService } from './../prisma.service';
 export class ProjectService {
   constructor(private prisma: PrismaService) {}
 
-  async projetcs(): Promise<Project[]> {
+  async projects(): Promise<Project[]> {
     return this.prisma.project.findMany({
       include: {
         external: true,

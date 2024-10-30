@@ -32,9 +32,10 @@ describe('InternalFactorService', () => {
   const db = {
     internal: {
       findMany: jest.fn().mockReturnValue([internal]),
-      create: jest.fn((data) =>
-        data.data === internal ? internal : uniqueConstraint,
-      ),
+      create: jest
+        .fn()
+        .mockImplementationOnce(() => internal)
+        .mockImplementationOnce(() => uniqueConstraint),
       update: jest.fn(({ where: { id } }) =>
         id === updateInternal.id ? updateInternal : idNotFound,
       ),
@@ -71,13 +72,13 @@ describe('InternalFactorService', () => {
       expect(await service.createInternalFactor(internal)).toEqual(internal);
     });
 
-    // it('should return error - Unique error', async () => {
-    //   let failNew = newInternal;
-    //   failNew.command = null;
-    //   await service.createInternalFactor(newInternal)
-    //   expect(await service.createInternalFactor(failNew))
-    //   .toEqual(uniqueConstraint);
-    // });
+    it('should return error - Unique error', async () => {
+      const failNew = internal;
+      failNew.id = 2;
+      expect(await service.createInternalFactor(failNew)).toEqual(
+        uniqueConstraint,
+      );
+    });
   });
 
   describe('update internal factor by id', () => {

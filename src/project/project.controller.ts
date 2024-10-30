@@ -16,7 +16,7 @@ export class ProjectController {
 
   @Get()
   async getProjects(): Promise<Project[]> {
-    return this.projectService.projetcs();
+    return this.projectService.projects();
   }
 
   @Post()

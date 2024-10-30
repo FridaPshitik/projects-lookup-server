@@ -64,6 +64,10 @@ describe('ProjectService', () => {
     error:
       'An operation failed because it depends on one or more records that were required but not found. Record to delete does not exist.',
   };
+  const uniqueConstraint = {
+    status: 400,
+    error: 'Unique constraint failed on the fields: (`command`)',
+  };
   const purpose = 'תיעוד פרויקטים';
   const updateProject = projectInDB;
   updateProject.purpose = purpose;
@@ -71,7 +75,10 @@ describe('ProjectService', () => {
   const db = {
     project: {
       findMany: jest.fn().mockReturnValue([projectInDB]),
-      create: jest.fn().mockReturnValue(projectInDB),
+      create: jest
+        .fn()
+        .mockImplementationOnce(() => projectInDB)
+        .mockImplementationOnce(() => uniqueConstraint),
       update: jest.fn(({ where: { id } }) =>
         id === updateProject.id ? updateProject : idNotFound,
       ),
@@ -100,11 +107,19 @@ describe('ProjectService', () => {
   });
 
   it('should return projects', async () => {
-    expect(await service.projetcs()).toEqual([projectInDB]);
+    expect(await service.projects()).toEqual([projectInDB]);
   });
 
-  it('should create project', async () => {
-    expect(await service.createProject(projectToSend)).toEqual(projectInDB);
+  describe('create project', () => {
+    it('should create project', async () => {
+      expect(await service.createProject(projectToSend)).toEqual(projectInDB);
+    });
+
+    it('should return error - Unique error', async () => {
+      const failNew = projectToSend;
+      failNew.id = 2;
+      expect(await service.createProject(failNew)).toEqual(uniqueConstraint);
+    });
   });
 
   describe('update project by id', () => {
@@ -116,6 +131,7 @@ describe('ProjectService', () => {
         }),
       ).toEqual(updateProject);
     });
+
     it('should return error - id to update does not exist', async () => {
       expect(
         await service.updateProject({
@@ -125,7 +141,8 @@ describe('ProjectService', () => {
       ).toEqual(idNotFound);
     });
   });
-  describe('update project by id', () => {
+
+  describe('delete project by id', () => {
     it('should delete project', async () => {
       const projectInDB: { id: number } = { id: 1 };
       expect(
@@ -134,6 +151,7 @@ describe('ProjectService', () => {
         }),
       ).toEqual(updateProject);
     });
+
     it('should return error - id to delete does not exist', async () => {
       expect(
         await service.deleteProject({
