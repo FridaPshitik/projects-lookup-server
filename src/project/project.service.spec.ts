@@ -95,7 +95,7 @@ describe('ProjectService', () => {
   });
 
   it('should return projects', async () => {
-    expect(await service.projetcs()).toEqual([projectInDB]);
+    expect(await service.projects()).toEqual([projectInDB]);
   });
 
   it('should create project', async () => {
