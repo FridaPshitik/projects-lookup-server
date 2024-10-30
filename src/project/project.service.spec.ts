@@ -59,10 +59,15 @@ describe('ProjectService', () => {
     },
   };
 
-  const newProject = projectInDB;
-  newProject.id = 2;
-  newProject.name = 'אלומה';
-
+  const idNotFound = {
+    status: 400,
+    error:
+      'An operation failed because it depends on one or more records that were required but not found. Record to delete does not exist.',
+  };
+  const uniqueConstraint = {
+    status: 400,
+    error: 'Unique constraint failed on the fields: (`command`)',
+  };
   const purpose = 'תיעוד פרויקטים';
   const updateProject = projectInDB;
   updateProject.purpose = purpose;
@@ -70,9 +75,16 @@ describe('ProjectService', () => {
   const db = {
     project: {
       findMany: jest.fn().mockReturnValue([projectInDB]),
-      create: jest.fn().mockReturnValue(newProject),
-      update: jest.fn().mockReturnValue(updateProject),
-      delete: jest.fn().mockReturnValue(updateProject),
+      create: jest
+        .fn()
+        .mockImplementationOnce(() => projectInDB)
+        .mockImplementationOnce(() => uniqueConstraint),
+      update: jest.fn(({ where: { id } }) =>
+        id === updateProject.id ? updateProject : idNotFound,
+      ),
+      delete: jest.fn(({ where: { id } }) =>
+        id === updateProject.id ? updateProject : idNotFound,
+      ),
     },
   };
 
@@ -95,28 +107,57 @@ describe('ProjectService', () => {
   });
 
   it('should return projects', async () => {
-    expect(await service.projetcs()).toEqual([projectInDB]);
+    expect(await service.projects()).toEqual([projectInDB]);
   });
 
-  it('should create project', async () => {
-    expect(await service.createProject(projectToSend)).toEqual(newProject);
+  describe('create project', () => {
+    it('should create project', async () => {
+      expect(await service.createProject(projectToSend)).toEqual(projectInDB);
+    });
+
+    it('should return error - Unique error', async () => {
+      const failNew = projectToSend;
+      failNew.id = 2;
+      expect(await service.createProject(failNew)).toEqual(uniqueConstraint);
+    });
   });
 
-  it('should update project', async () => {
-    expect(
-      await service.updateProject({
-        where: { id: projectInDB.id },
-        data: { purpose: purpose },
-      }),
-    ).toEqual(updateProject);
+  describe('update project by id', () => {
+    it('should update project', async () => {
+      expect(
+        await service.updateProject({
+          where: { id: projectInDB.id },
+          data: { purpose: purpose },
+        }),
+      ).toEqual(updateProject);
+    });
+
+    it('should return error - id to update does not exist', async () => {
+      expect(
+        await service.updateProject({
+          where: { id: -9 },
+          data: { purpose: purpose },
+        }),
+      ).toEqual(idNotFound);
+    });
   });
 
-  it('should delete project', async () => {
-    const projectInDB: { id: number } = { id: 1 };
-    expect(
-      await service.deleteProject({
-        where: { id: projectInDB.id },
-      }),
-    ).toEqual(updateProject);
+  describe('delete project by id', () => {
+    it('should delete project', async () => {
+      const projectInDB: { id: number } = { id: 1 };
+      expect(
+        await service.deleteProject({
+          where: { id: projectInDB.id },
+        }),
+      ).toEqual(updateProject);
+    });
+
+    it('should return error - id to delete does not exist', async () => {
+      expect(
+        await service.deleteProject({
+          where: { id: -9 },
+        }),
+      ).toEqual(idNotFound);
+    });
   });
 });

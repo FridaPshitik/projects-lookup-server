@@ -5,22 +5,10 @@ import { PrismaService } from './../prisma.service';
 describe('InternalFactorService', () => {
   let service: InternalFactorService;
 
-  const internal = [
-    {
-      id: 1,
-      name: 'יחידת ציפור',
-      command: 'פיקוד צפון',
-      department: '',
-      contact: 'רפי',
-      phone: '0534189652',
-      email: 'r@tzipor.co.il',
-    },
-  ];
-
-  const newInternal = {
-    id: 2,
+  const internal = {
+    id: 1,
     name: 'יחידת ציפור',
-    command: 'פיקוד דרום',
+    command: 'פיקוד צפון',
     department: '',
     contact: 'רפי',
     phone: '0534189652',
@@ -28,15 +16,32 @@ describe('InternalFactorService', () => {
   };
 
   const phone = '0533333333';
-  const updateInternal = internal[0];
+  const updateInternal = internal;
   updateInternal.phone = phone;
 
+  const idNotFound = {
+    status: 400,
+    error:
+      'An operation failed because it depends on one or more records that were required but not found. Record to delete does not exist.',
+  };
+
+  const uniqueConstraint = {
+    status: 400,
+    error: 'Unique constraint failed on the fields: (`command`)',
+  };
   const db = {
     internal: {
-      findMany: jest.fn().mockReturnValue(internal),
-      create: jest.fn().mockReturnValue(newInternal),
-      update: jest.fn().mockReturnValue(updateInternal),
-      delete: jest.fn().mockReturnValue(updateInternal),
+      findMany: jest.fn().mockReturnValue([internal]),
+      create: jest
+        .fn()
+        .mockImplementationOnce(() => internal)
+        .mockImplementationOnce(() => uniqueConstraint),
+      update: jest.fn(({ where: { id } }) =>
+        id === updateInternal.id ? updateInternal : idNotFound,
+      ),
+      delete: jest.fn(({ where: { id } }) =>
+        id === updateInternal.id ? updateInternal : idNotFound,
+      ),
     },
   };
 
@@ -59,39 +64,58 @@ describe('InternalFactorService', () => {
   });
 
   it('should return internal factors', async () => {
-    expect(await service.internalFactors()).toEqual([
-      {
-        id: internal[0].id,
-        name: internal[0].name,
-        command: internal[0].command,
-        department: internal[0].department,
-        contact: internal[0].contact,
-        phone: internal[0].phone,
-        email: internal[0].email,
-      },
-    ]);
+    expect(await service.internalFactors()).toEqual([internal]);
   });
 
-  it('should create internal factor', async () => {
-    expect(await service.createInternalFactor(newInternal)).toEqual(
-      newInternal,
-    );
+  describe('create internal factor', () => {
+    it('should create internal factor', async () => {
+      expect(await service.createInternalFactor(internal)).toEqual(internal);
+    });
+
+    it('should return error - Unique error', async () => {
+      const failNew = internal;
+      failNew.id = 2;
+      expect(await service.createInternalFactor(failNew)).toEqual(
+        uniqueConstraint,
+      );
+    });
   });
 
-  it('should update internal factor', async () => {
-    expect(
-      await service.updateInternalFactor({
-        where: { id: internal[0].id },
-        data: { phone: phone },
-      }),
-    ).toEqual(updateInternal);
+  describe('update internal factor by id', () => {
+    it('should update internal factor', async () => {
+      expect(
+        await service.updateInternalFactor({
+          where: { id: internal.id },
+          data: { phone: phone },
+        }),
+      ).toEqual(updateInternal);
+    });
+
+    it('should return error - id to update does not exist', async () => {
+      expect(
+        await service.updateInternalFactor({
+          where: { id: -9 },
+          data: { phone: phone },
+        }),
+      ).toEqual(idNotFound);
+    });
   });
 
-  it('should delete internal factor', async () => {
-    expect(
-      await service.deleteInternalFactor({
-        where: { id: internal[0].id },
-      }),
-    ).toEqual(updateInternal);
+  describe('delete internal factor by id', () => {
+    it('should delete internal factor', async () => {
+      expect(
+        await service.deleteInternalFactor({
+          where: { id: internal.id },
+        }),
+      ).toEqual(updateInternal);
+    });
+
+    it('should return error - id to delete does not exist', async () => {
+      expect(
+        await service.deleteInternalFactor({
+          where: { id: -9 },
+        }),
+      ).toEqual(idNotFound);
+    });
   });
 });
