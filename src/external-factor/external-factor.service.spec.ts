@@ -6,31 +6,33 @@ import * as fs from 'fs';
 describe('ExternalFactorService', () => {
   let service: ExternalFactorService;
 
-  const external = [
-    {
-      id: 1,
-      name: 'סקייבר',
-      image: 'inside.png',
-    },
-  ];
-  const newExternal = {
-    id: 2,
-    name: 'inside',
+  const external = {
+    id: 1,
+    name: 'סקייבר',
     image: 'inside.png',
   };
 
+  const idNotFound = {
+    status: 400,
+    error:
+      'An operation failed because it depends on one or more records that were required but not found. Record to delete does not exist.',
+  };
+
   const name = 'start';
-  const updateExternal = external[0];
+  const updateExternal = external;
   updateExternal.name = name;
 
   const db = {
     external: {
-      findMany: jest.fn().mockReturnValue(external),
-      create: jest.fn().mockReturnValue(newExternal),
-      update: jest.fn().mockReturnValue(updateExternal),
-      delete: jest.fn().mockReturnValue(updateExternal),
+      findMany: jest.fn().mockReturnValue([external]),
+      create: jest.fn().mockReturnValue(external),
+      update: jest.fn(({ where: { id } }) =>
+        id === updateExternal.id ? updateExternal : idNotFound,
+      ),
+      delete: jest.fn(({ where: { id } }) =>
+        id === updateExternal.id ? updateExternal : idNotFound,
+      ),
       findUnique: jest.fn().mockReturnValue(updateExternal),
-      // rm: jest.fn().mockReturnValue(null),
     },
   };
   jest.spyOn(fs, 'rm').mockReturnValue(null);
@@ -54,35 +56,45 @@ describe('ExternalFactorService', () => {
   });
 
   it('should return external factors', async () => {
-    expect(await service.externalFactors()).toEqual([
-      {
-        id: external[0].id,
-        name: external[0].name,
-        image: external[0].image,
-      },
-    ]);
+    expect(await service.externalFactors()).toEqual([external]);
   });
 
   it('should create external factor', async () => {
-    expect(await service.createExternalFactor(newExternal)).toEqual(
-      newExternal,
-    );
+    expect(await service.createExternalFactor(external)).toEqual(external);
   });
+  describe('update internal factor by id', () => {
+    it('should update external factor', async () => {
+      expect(
+        await service.updateExternalFactor({
+          where: { id: external.id },
+          data: { name: name },
+        }),
+      ).toEqual(updateExternal);
+    });
 
-  it('should update external factor', async () => {
-    expect(
-      await service.updateExternalFactor({
-        where: { id: external[0].id },
-        data: { name: name },
-      }),
-    ).toEqual(updateExternal);
+    it('should return error - id to update does not exist', async () => {
+      expect(
+        await service.updateExternalFactor({
+          where: { id: -9 },
+          data: { name: name },
+        }),
+      ).toEqual(idNotFound);
+    });
   });
-
-  it('should delete external factor', async () => {
-    expect(
-      await service.deleteExternalFactor({
-        where: { id: external[0].id },
-      }),
-    ).toEqual(updateExternal);
+  describe('delete external factor by id', () => {
+    it('should delete external factor', async () => {
+      expect(
+        await service.deleteExternalFactor({
+          where: { id: external.id },
+        }),
+      ).toEqual(updateExternal);
+    });
+    it('should return error - id to delete does not exist', async () => {
+      expect(
+        await service.deleteExternalFactor({
+          where: { id: -9 },
+        }),
+      ).toEqual(idNotFound);
+    });
   });
 });
