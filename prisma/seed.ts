@@ -48,7 +48,7 @@ async function main() {
         requiresId: 1,
         status: 'בתהליך',
         internalId: 1,
-        classification: 'שמור',
+        classification: 'בלמ"ס',
         environment: 'אדומה',
         population: ['מילואים'],
       },
